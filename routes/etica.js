@@ -14,6 +14,7 @@ let web3 = new Web3(new Web3.providers.HttpProvider(MAINRPC));
 let contract = new Contract(abi, CONTRACTADDRESS);
 // set provider for all later instances to use
 contract.setProvider(MAINRPC);
+const RANDOM_ADDRESS = '0x8d5D6530aD5007590a319cF2ec3ee5bf8A3C35AC';
 
 
 // Setup the router for express
@@ -25,7 +26,7 @@ const router = express.Router();
 
 router.get("/supply", [], async (req, res) => {
 
-     _supply = await contract.methods.totalSupply().call({from: '0xC57718d8F50Cb526fad89b8D732919351A1a13F1'});
+     _supply = await contract.methods.totalSupply().call({from: RANDOM_ADDRESS});
 
      res.send({
         ok: true,
@@ -36,7 +37,7 @@ router.get("/supply", [], async (req, res) => {
 
 router.get("/supply/unit/eti", [], async (req, res) => {
 
-    _supply = await contract.methods.totalSupply().call({from: '0xC57718d8F50Cb526fad89b8D732919351A1a13F1'});
+    _supply = await contract.methods.totalSupply().call({from: RANDOM_ADDRESS});
 
     _supply = web3.utils.fromWei(_supply, 'ether');
 
@@ -49,7 +50,7 @@ router.get("/supply/unit/eti", [], async (req, res) => {
 
 router.get("/threshold", [], async (req, res) => {
 
-     _threshold = await contract.methods.APPROVAL_THRESHOLD().call({from: '0xC57718d8F50Cb526fad89b8D732919351A1a13F1'});
+     _threshold = await contract.methods.APPROVAL_THRESHOLD().call({from: RANDOM_ADDRESS});
 
      res.send({
         ok: true,
@@ -60,7 +61,7 @@ router.get("/threshold", [], async (req, res) => {
 
 router.get("/tokensminted", [], async (req, res) => {
 
-    _tokensMinted = await contract.methods.tokensMinted().call({from: '0xC57718d8F50Cb526fad89b8D732919351A1a13F1'});
+    _tokensMinted = await contract.methods.tokensMinted().call({from: RANDOM_ADDRESS});
 
     res.send({
        ok: true,
@@ -71,7 +72,7 @@ router.get("/tokensminted", [], async (req, res) => {
 
 router.get("/blockreward", [], async (req, res) => {
 
-    _blockreward = await contract.methods.blockreward().call({from: '0xC57718d8F50Cb526fad89b8D732919351A1a13F1'});
+    _blockreward = await contract.methods.blockreward().call({from: RANDOM_ADDRESS});
 
     res.send({
        ok: true,
@@ -82,7 +83,7 @@ router.get("/blockreward", [], async (req, res) => {
 
 router.get("/periodrewardtemp", [], async (req, res) => {
 
-    _periodrewardtemp = await contract.methods.periodrewardtemp().call({from: '0xC57718d8F50Cb526fad89b8D732919351A1a13F1'});
+    _periodrewardtemp = await contract.methods.periodrewardtemp().call({from: RANDOM_ADDRESS});
 
     res.send({
        ok: true,
@@ -93,7 +94,7 @@ router.get("/periodrewardtemp", [], async (req, res) => {
 
 router.get("/challengenumber", [], async (req, res) => {
 
-    _challengeNumber = await contract.methods.challengeNumber().call({from: '0xC57718d8F50Cb526fad89b8D732919351A1a13F1'});
+    _challengeNumber = await contract.methods.challengeNumber().call({from: RANDOM_ADDRESS});
 
     res.send({
        ok: true,
@@ -105,7 +106,7 @@ router.get("/challengenumber", [], async (req, res) => {
 
 router.get("/epochcount", [], async (req, res) => {
 
-    _epochCount = await contract.methods.epochCount().call({from: '0xC57718d8F50Cb526fad89b8D732919351A1a13F1'});
+    _epochCount = await contract.methods.epochCount().call({from: RANDOM_ADDRESS});
 
     res.send({
        ok: true,
@@ -116,7 +117,7 @@ router.get("/epochcount", [], async (req, res) => {
 
 router.get("/miningtarget", [], async (req, res) => {
 
-    _miningTarget = await contract.methods.miningTarget().call({from: '0xC57718d8F50Cb526fad89b8D732919351A1a13F1'});
+    _miningTarget = await contract.methods.miningTarget().call({from: RANDOM_ADDRESS});
 
     res.send({
        ok: true,
@@ -127,7 +128,7 @@ router.get("/miningtarget", [], async (req, res) => {
 
 router.get("/miningdifficulty", [], async (req, res) => {
 
-    _MiningDifficulty = await contract.methods.getMiningDifficulty().call({from: '0xC57718d8F50Cb526fad89b8D732919351A1a13F1'});
+    _MiningDifficulty = await contract.methods.getMiningDifficulty().call({from: RANDOM_ADDRESS});
 
     res.send({
        ok: true,
@@ -138,7 +139,7 @@ router.get("/miningdifficulty", [], async (req, res) => {
 
 router.get("/miningreward", [], async (req, res) => {
 
-    _MiningReward = await contract.methods.getMiningReward().call({from: '0xC57718d8F50Cb526fad89b8D732919351A1a13F1'});
+    _MiningReward = await contract.methods.getMiningReward().call({from: RANDOM_ADDRESS});
 
     res.send({
        ok: true,
@@ -149,7 +150,7 @@ router.get("/miningreward", [], async (req, res) => {
 
 router.get("/maximumtarget", [], async (req, res) => {
 
-    _MaximumTarget = await contract.methods._MAXIMUM_TARGET().call({from: '0xC57718d8F50Cb526fad89b8D732919351A1a13F1'});
+    _MaximumTarget = await contract.methods._MAXIMUM_TARGET().call({from: RANDOM_ADDRESS});
 
     res.send({
        ok: true,
@@ -160,7 +161,7 @@ router.get("/maximumtarget", [], async (req, res) => {
 
 router.get("/minimumtarget", [], async (req, res) => {
 
-    _MinimumTarget = await contract.methods._MINIMUM_TARGET().call({from: '0xC57718d8F50Cb526fad89b8D732919351A1a13F1'});
+    _MinimumTarget = await contract.methods._MINIMUM_TARGET().call({from: RANDOM_ADDRESS});
 
     res.send({
        ok: true,
@@ -172,7 +173,7 @@ router.get("/minimumtarget", [], async (req, res) => {
 
 router.get("/latestdifficultyperiodstarted", [], async (req, res) => {
 
-    _latestDifficultyPeriodStarted = await contract.methods.latestDifficultyPeriodStarted().call({from: '0xC57718d8F50Cb526fad89b8D732919351A1a13F1'});
+    _latestDifficultyPeriodStarted = await contract.methods.latestDifficultyPeriodStarted().call({from: RANDOM_ADDRESS});
 
     res.send({
        ok: true,
@@ -183,7 +184,7 @@ router.get("/latestdifficultyperiodstarted", [], async (req, res) => {
 
 router.get("/lastrewardto", [], async (req, res) => {
 
-    _lastRewardTo = await contract.methods.lastRewardTo().call({from: '0xC57718d8F50Cb526fad89b8D732919351A1a13F1'});
+    _lastRewardTo = await contract.methods.lastRewardTo().call({from: RANDOM_ADDRESS});
 
     res.send({
        ok: true,
@@ -194,7 +195,7 @@ router.get("/lastrewardto", [], async (req, res) => {
 
 router.get("/lastrewardethblocknumber", [], async (req, res) => {
 
-    _lastRewardEthBlockNumber = await contract.methods.lastRewardEthBlockNumber().call({from: '0xC57718d8F50Cb526fad89b8D732919351A1a13F1'});
+    _lastRewardEthBlockNumber = await contract.methods.lastRewardEthBlockNumber().call({from: RANDOM_ADDRESS});
 
     res.send({
        ok: true,
@@ -207,8 +208,8 @@ router.get("/balance", [], async (req, res) => {
 
     let _address= req.query.address;
      let _balance = {};
-     _balance.eticas = await contract.methods.balanceOf(_address).call({from: '0xC57718d8F50Cb526fad89b8D732919351A1a13F1'});
-     _balance.bosoms = await contract.methods.bosomsOf(_address).call({from: '0xC57718d8F50Cb526fad89b8D732919351A1a13F1'});
+     _balance.eticas = await contract.methods.balanceOf(_address).call({from: RANDOM_ADDRESS});
+     _balance.bosoms = await contract.methods.bosomsOf(_address).call({from: RANDOM_ADDRESS});
      _balance.egaz = await web3.eth.getBalance(_address);
 
      res.send({

@@ -7,7 +7,7 @@ var Contract = require('web3-eth-contract');
 const { abi } = require('./EticaRelease.json');
 const CONTRACTADDRESS = process.env.CONTRACT_ADDRESS;
 const MAINRPC = process.env.MAIN_RPC;
-const RANDOM_ADDRESS = '0xC57718d8F50Cb526fad89b8D732919351A1a13F1';
+const RANDOM_ADDRESS = '0x8d5D6530aD5007590a319cF2ec3ee5bf8A3C35AC';
 
 class CronsHandler {
 
