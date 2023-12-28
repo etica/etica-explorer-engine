@@ -12,27 +12,39 @@ class TransactionChecker {
     connection;
     contract;
     DbTransaction;
+    blocksdelay;
 
     constructor() {
         this.web3 = new Web3(new Web3.providers.HttpProvider(MAINRPC));
         this.contract = new Contract(abi, CONTRACTADDRESS);
         this.contract.setProvider(MAINRPC);
         this.DbTransaction = new DbTransactionKnex();
+        this.isSyncing = false;
     }
 
     async synchronizeBlocks() {
-        let block_latestonchain = await this.web3.eth.getBlock('latest'); // last block mined and confirmed on chain
-        
-        this.DbTransaction.getlatestdb().then(async (block_latestdb) => {
+
+            // Prevent concurrent synchronization by setting a flag
+            if (this.isSyncing) {
+                console.log('Already syncing blocks. Skipping this round.');
+                return;
+            }
+            try {
+
+                this.isSyncing = true;
+
+                let block_latestonchain = await this.web3.eth.getBlock('latest'); // last block mined and confirmed on chain
+                
+                this.DbTransaction.getlatestdb().then(async (block_latestdb) => {
 
                 console.log('latest block found is: ', block_latestdb);
 
-                let blocksdelay = block_latestonchain.number - block_latestdb.number; // Get nb blocks delay of db compared to onchain
+                this.blocksdelay = block_latestonchain.number - block_latestdb.number; // Get nb blocks delay of db compared to onchain
 
-                console.log('block delay is ', blocksdelay);
+                console.log('block delay is ', this.blocksdelay);
                 // If there is a delay we synchronize the db:
-                if(blocksdelay > 0){
-                for (let i = 0; i < blocksdelay; i++){
+                if(this.blocksdelay > 0){
+                for (let i = 0; i < this.blocksdelay; i++){
                     //console.log('sincronizing a block!');
                     let j = block_latestdb.number + 1 + i; // implements j counter because (block_latestdb.number - i) was inserting in inverse order. example 10479 thne 10478 ...
                     let nextblock = await this.web3.eth.getBlock(j);
@@ -42,7 +54,15 @@ class TransactionChecker {
                 }
                 }
 
-        });
+                });
+
+            } finally {
+                this.isSyncing = false;
+            }
+
+
+
+
 
     }
 

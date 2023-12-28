@@ -13,7 +13,7 @@ class AxiosHandler {
 
     constructor() {
 
-      console.log('axioshandler loaded');
+      console.log('axioshandler started with success');
 
     }
 

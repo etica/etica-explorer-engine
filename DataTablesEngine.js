@@ -21,7 +21,7 @@ class CronsHandler {
         this.contract = new Contract(abi, CONTRACTADDRESS);
         this.contract.setProvider(MAINRPC);
         this.DbTransaction = new DbTransactionKnex();
-        console.log('ExplorerFillTables loaded');
+        console.log('DataTablesEngines started with success');
     }
 
 

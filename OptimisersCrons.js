@@ -40,9 +40,9 @@ async updatestagings(){
   this.isRunningUpdateStagings = true;
   //console.log('this.isRunningUpdateStagings now true lets proceed');
   try {
-    const stagingupdates = await this.getstagings();
+    const stagingupdates = await this.DbTransaction.getstagings();
     for (let onestaging of stagingupdates) {
-        let tx = await this.DbTransaction.getstagingtx(onestaging, 90000);
+        let tx = await this.DbTransaction.getstagingtx(onestaging, 1);
         if (tx && tx != null){
           await this.DbTransaction.updatetxtype(tx, onestaging);
           await this.DbTransaction.deletestaging(onestaging.hash);
@@ -74,9 +74,9 @@ async optimised_update_transfers_timestamp(){
                 try {
                     const transfers = await this.DbTransaction.transfersnotimestamp(this.lasttransfersiddone);
                     for (let onetransfer of transfers) {
-                        let transfertx = await this.DbTransaction.gettransfertx(onetransfer, 90000);
+                        let transfertx = await this.DbTransaction.gettransfertx(onetransfer, 1);
                         if (transfertx && transfertx != null){
-                        let block = await this.DbTransaction.getblockfromtx(transfertx, 1100000);
+                        let block = await this.DbTransaction.getblockfromtx(transfertx, 1);
                         let isinserted = await this.DbTransaction.updatettransfertimestamp(onetransfer, block.timestamp);
                         
                         if(isinserted && this.lasttransfersiddone < onetransfer.id){
@@ -119,7 +119,7 @@ async optimised_update_transfers_timestamp(){
 
 }
 
-let newHanlder = new CronsHandler(615111);
+let newHanlder = new CronsHandler(1);
 
 setInterval(() => {
     newHanlder.updatestagings();

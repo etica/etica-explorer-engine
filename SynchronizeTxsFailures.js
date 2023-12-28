@@ -14,6 +14,7 @@ class TransactionChecker {
     connection;
     contract;
     CheckTxsFailureIndex; // keeps track id of last etransaction failure status checked
+    isRunning;
     DbTransaction;
 
     constructor(fromIndex) {
@@ -22,9 +23,17 @@ class TransactionChecker {
         this.contract = new Contract(abi, CONTRACTADDRESS);
         this.contract.setProvider(MAINRPC);
         this.DbTransaction = new DbTransactionKnex();
+        this.isRunning = false;
     }
 
     async scanTxsFailures() {
+
+        if (this.isRunning) {
+            return; // Skip execution if already running
+        }
+
+
+       try { 
 
         this.DbTransaction.getLastEtransaction().then(async (newlastcheckedid) => {
 
@@ -68,6 +77,10 @@ class TransactionChecker {
         }).catch(e => console.log(e));
     
        }).catch(e => console.log(e));
+
+        } finally {
+            this.isRunning = false;
+        }
 
     }
 
