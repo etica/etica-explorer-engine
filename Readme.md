@@ -1,26 +1,53 @@
 ## ETICA EXPLORER ENGINE SCRIPTS
 
-### SCRIPTS TO RUN
 
-Run the following commands:
 
-```bash
--> node SynchronizeBlocks.js 
--> node SynchronizeMissedTxs.js 
--> node SynchronizeTxsFailures.js
--> node EticascanFillTables.js 
--> node EticascanMysqlCrons.js 
-```
+### 1. **Install Etica Explorer Engine**
 
-launch an rpc api endpoint returning blockchain metric data (optional):
--> node api-server.js
+1. **Install Etica Explorer Engine**:
+    ```
+    mkdir etica-explorer-engine
+    cd etica-explorer-engine
+    git clone https://github.com/etica/etica-explorer-engine.git
+    npm install
+    ```
 
-## LAUNCH knex migrations:
+### 2. Install PM2 (or any other Process Manager)
+
+For managing the execution of Node.js applications and scripts, we recommend using PM2, a production process manager. If you haven't installed PM2 already, follow these steps:
+
+2. **Install PM2 globally**: Run the following command in your terminal or command prompt:
+    ```
+    npm install pm2 -g
+    ```
+
+### 3. LAUNCH knex migrations:
 ```bash
 -> npx knex migrate
 ```
 
-Once the scripts are launched, your database will be synced and continuously update with the latest blockchain data. This database is versatile and can be employed to develop new web applications or seamlessly integrate Etica data into your existing web apps.
+
+### 4. SCRIPTS TO RUN
+
+Run the following commands:
+
+```bash
+-> pm2 start SynchronizeBlocks.js 
+-> pm2 start SynchronizeMissedTxs.js 
+-> pm2 start SynchronizeTxsFailures.js
+-> pm2 start EticascanFillTables.js 
+-> pm2 start EticascanMysqlCrons.js 
+```
+
+launch an rpc api endpoint returning blockchain metric data (optional):
+```bash
+-> node api-server.js
+```
+
+
+Once the scripts are launched you will have a synced database that will keep syncing with blockchain data.
+
+The database can be used to build brand new web apps or integrate Etica data into your existing web apps
 
 ## Supported Databases
 
