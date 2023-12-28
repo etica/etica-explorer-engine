@@ -4,44 +4,44 @@
 
 ### 1. **Install Etica Explorer Engine**
 
-1. **Install Etica Explorer Engine**:
-    ```
-    mkdir etica-explorer-engine
-    cd etica-explorer-engine
-    git clone https://github.com/etica/etica-explorer-engine.git
-    npm install
-    ```
+**Install Etica Explorer Engine with following commands**:
+```
+mkdir etica-explorer-engine
+cd etica-explorer-engine
+git clone https://github.com/etica/etica-explorer-engine.git
+npm install
+```
 
 ### 2. Install PM2 (or any other Process Manager)
 
-For managing the execution of Node.js applications and scripts, we recommend using PM2, a production process manager. If you haven't installed PM2 already, follow these steps:
+For managing the execution of Node.js applications and scripts, we recommend using PM2, a production process manager. If you haven't already installed a process manager like PM2, follow these steps:
 
-2. **Install PM2 globally**: Run the following command in your terminal or command prompt:
-    ```
-    npm install pm2 -g
-    ```
+**Install PM2 globally**:
+```
+npm install pm2 -g
+```
 
 ### 3. LAUNCH knex migrations:
 ```bash
--> npx knex migrate
+npx knex migrate
 ```
 
 
 ### 4. SCRIPTS TO RUN
 
-Run the following commands:
+**Start Etica Explorer Engine**: Run the following command in your terminal or command prompt:
 
 ```bash
--> pm2 start SynchronizeBlocks.js 
--> pm2 start SynchronizeMissedTxs.js 
--> pm2 start SynchronizeTxsFailures.js
--> pm2 start EticascanFillTables.js 
--> pm2 start EticascanMysqlCrons.js 
+pm2 start SynchronizeBlocks.js 
+pm2 start SynchronizeMissedTxs.js 
+pm2 start SynchronizeTxsFailures.js
+pm2 start EticascanFillTables.js 
+pm2 start EticascanMysqlCrons.js 
 ```
 
-launch an rpc api endpoint returning blockchain metric data (optional):
+(optional) Launch an rpc api endpoint returning blockchain metric data:
 ```bash
--> node api-server.js
+pm2 start api-server.js
 ```
 
 
