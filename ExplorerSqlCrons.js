@@ -23,7 +23,7 @@ class CronsHandler {
       this.lasttransfersiddone = _lasttransfersiddone;
       this.isRunningUpdateTransfersTimestamps = false;
       this.isRunningUpdateStagings = false;
-      console.log('cronshandler loaded');
+      console.log('ExplorersqlCronds loaded');
 
     }
 

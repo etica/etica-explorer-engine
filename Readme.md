@@ -35,8 +35,8 @@ npx knex migrate
 pm2 start SynchronizeBlocks.js 
 pm2 start SynchronizeMissedTxs.js 
 pm2 start SynchronizeTxsFailures.js
-pm2 start EticascanFillTables.js 
-pm2 start EticascanMysqlCrons.js 
+pm2 start ExplorerFillTables.js 
+pm2 start ExplorerSqlCrons.js 
 ```
 
 (optional) Launch an rpc api endpoint returning blockchain metric data:
