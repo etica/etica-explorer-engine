@@ -14,7 +14,7 @@ npm install
 
 ### 2. Install PM2 (or any other Process Manager)
 
-For managing the execution of Node.js applications and scripts, we recommend using PM2, a production process manager. If you haven't already installed a process manager like PM2, follow these steps:
+For managing the execution of etica-explorer-engine scripts, we recommend using PM2, a production process manager. If you haven't already installed a process manager like PM2, follow these steps:
 
 **Install PM2 globally**:
 ```
