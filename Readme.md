@@ -23,10 +23,9 @@ npm install pm2 -g
 
 ### 3. LAUNCH knex migrations:
 ```bash
-npm install knex -g
-knex migrate:latest
+npx knex migrate:latest
 ```
-knex migrtion documentation: https://knexjs.org/guide/migrations.html#migration-cli
+knex migrations full documentation: https://knexjs.org/guide/migrations.html#migration-cli
 
 ### 4. SCRIPTS TO RUN
 
@@ -52,7 +51,7 @@ The database can be used to build brand new web apps or integrate Etica data int
 
 ## Supported Databases
 
-Etica Explorer Engine relies on the powerful knex.js ORM to interact with databases. As a result, Etica Engine Explorer supports various databases, including:
+Etica Explorer Engine relies on the knex.js ORM to interact with databases. As a result, Etica Engine Explorer supports various databases, including:
 - PostgreSQL
 - CockroachDB
 - MSSQL

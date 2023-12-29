@@ -20,7 +20,6 @@ exports.up = function(knex) {
       table.integer('nbtxs').nullable();
       
       table.index('timestamp');
-      table.index('number');
       table.index('hash');
       table.index('parenthash');
       table.index('miner');
