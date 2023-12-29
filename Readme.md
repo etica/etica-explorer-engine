@@ -66,3 +66,11 @@ Etica Explorer Engine relies on the knex.js ORM to interact with databases. As a
 - Better-SQLite3
 - Oracle
 - Amazon Redshift
+
+
+### If you want to install Etica Explorer Engine as a module:
+https://www.npmjs.com/package/etica-explorer-engine
+
+```bash
+npm i etica-explorer-engine
+```
