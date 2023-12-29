@@ -23,7 +23,7 @@ npm install pm2 -g
 
 ### 3. LAUNCH knex migrations:
 
-1.Make sure to create a database named eticaenginedb with MYSQL, PpostgreSQL or any of the one in the supported list bellow  
+1.Make sure to create a database named eticaenginedb (use MYSQL, PostgreSQL or any of the supported list bellow)  
 2.Then update .env to set the database connection settings.  
 3.Finally launch migrations:  
 
