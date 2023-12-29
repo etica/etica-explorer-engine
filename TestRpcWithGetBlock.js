@@ -6,7 +6,7 @@ const address = '0xC31Bd1AcbfCdf2c659Bb63e5a096d4F761A9B8B5';
 
 const CONTRACTADDRESS = process.env.CONTRACT_ADDRESS;
 const MAINRPC = process.env.MAIN_RPC;
-const DBTYPE = process.env.DBTYPE;
+const DB_CLIENT_TYPE = process.env.DB_CLIENT_TYPE;
 
 
 class EventsChecker {

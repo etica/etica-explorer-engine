@@ -9,7 +9,7 @@ const { abi } = require('../EticaRelease.json');
 
 const CONTRACTADDRESS = process.env.CONTRACT_ADDRESS;
 const MAINRPC = process.env.MAIN_RPC;
-const DBTYPE = process.env.DBTYPE;
+const DB_CLIENT_TYPE = process.env.DB_CLIENT_TYPE;
 let web3 = new Web3(new Web3.providers.HttpProvider(MAINRPC));
 let contract = new Contract(abi, CONTRACTADDRESS);
 // set provider for all later instances to use
