@@ -23,9 +23,10 @@ npm install pm2 -g
 
 ### 3. LAUNCH knex migrations:
 ```bash
-npx knex migrate
+npm install knex -g
+knex migrate:latest
 ```
-
+knex migrtion documentation: https://knexjs.org/guide/migrations.html#migration-cli
 
 ### 4. SCRIPTS TO RUN
 
