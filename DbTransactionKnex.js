@@ -447,6 +447,28 @@ class DbTransactionKnex {
         }
     }
 
+    async insertNewRecover(newrecover) {
+        try {
+            if (newrecover.event === 'NewRecover') {
+                const sqlnewrecover = {
+                    transactionhash: newrecover.transactionHash,
+                    voter: newrecover.returnValues._voter,
+                    proposal_hash: newrecover.returnValues._proposal,
+                    amount: newrecover.returnValues.amount,
+                };
+
+                const results = await this.connection('newrecovers').insert(sqlnewrecover);
+                return results;
+            } else {
+                return 'Won\'t insert this event in DB as newrecover, wrong type of event, not a newrecover';
+            }
+        } catch (error) {
+            console.error('Error inserting new recover:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
 
     
     async insertNewSlash(newslash) {

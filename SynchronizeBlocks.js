@@ -186,6 +186,10 @@ class TransactionChecker {
                 this.DbTransaction.insertTieClaimed(onevent);
                 this.DbTransaction.updateEtransaction(onevent.transactionHash, 15); // eventtype 15
             }
+            else if(onevent.event == 'NewRecover'){
+                this.DbTransaction.insertNewRecover(onevent);
+                this.DbTransaction.updateEtransaction(onevent.transactionHash, 17); // eventtype 17
+            }
             else if(onevent.event == 'CreatedPeriod'){
                 this.DbTransaction.insertNewPeriod(onevent);
             }
