@@ -37,7 +37,7 @@ class TransactionChecker {
                 
                 this.DbTransaction.getlatestdb().then(async (block_latestdb) => {
 
-                console.log('latest block found is: ', block_latestdb);
+                //console.log('latest block found is: ', block_latestdb);
 
                 this.blocksdelay = block_latestonchain.number - block_latestdb.number; // Get nb blocks delay of db compared to onchain
 
