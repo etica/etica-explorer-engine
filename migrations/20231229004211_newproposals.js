@@ -2,7 +2,7 @@ exports.up = function(knex) {
     return knex.schema.createTable('newproposals', function(table) {
       table.increments('id').primary();
       table.string('transactionhash'); // Hash of the transaction
-      table.string('proposed_release_hash'); // Hash of the proposal
+      table.string('proposed_release_hash').unique(); // Hash of the proposal
       table.string('proposer'); // Address of the proposer
       table.string('diseasehash'); // Disease hash
       table.string('chunkid'); // Blockchain Id of the chunk

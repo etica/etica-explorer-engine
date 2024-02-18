@@ -1,7 +1,7 @@
 exports.up = function(knex) {
     return knex.schema.createTable('blocks', function(table) {
       table.increments('id').primary();
-      table.integer('number').nullable().index(); // The block number. null if a pending block. stored as integer to facilitate sorting
+      table.integer('number').nullable().unique().index(); // The block number. null if a pending block. stored as integer to facilitate sorting
       table.string('hash').nullable(); // Hash of the block. null if a pending block.
       table.string('parenthash').nullable(); // String: Hash of the parent block.
       table.string('nonce').nullable(); // 8 Bytes - String: Hash of the generated proof-of-work. null if a pending block.

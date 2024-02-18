@@ -54,10 +54,12 @@ class TransactionChecker {
                 }
                 }
 
+                this.isSyncing = false;
+
                 });
 
-            } finally {
-                this.isSyncing = false;
+            } catch (error) {
+                console.error('Error during synchronization:', error);
             }
 
 
