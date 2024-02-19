@@ -23,7 +23,7 @@ class CronsHandler {
       this.lasttransfersiddone = _lasttransfersiddone;
       this.isRunningUpdateTransfersTimestamps = false;
       this.isRunningUpdateStagings = false;
-      console.log('ExplorersqlCronds loaded');
+      console.log('Explorer Crons Optimiser script started with success');
 
     }
 
@@ -51,11 +51,11 @@ async updatestagings(){
           await this.DbTransaction.setstagingmissingtx(onestaging);
         }
     }
+
+    this.isRunningUpdateStagings = false;
+
   } catch (error) {
     console.error(error);
-  } finally {
-    this.isRunningUpdateStagings = false;
-   // console.log('this.isRunningUpdateStagings is now false, ready for next batch');
   }
 
 }
@@ -106,11 +106,11 @@ async optimised_update_transfers_timestamp(){
                         }
 
                     }
+
+                    this.isRunningUpdateTransfersTimestamps = false;
+
                 } catch (error) {
                     console.error(error);
-                } finally {
-                    this.isRunningUpdateTransfersTimestamps = false;
-                   // console.log('this.isRunningUpdateTransfersTimestamps is now false, ready for next batch');
                 }
 }
 

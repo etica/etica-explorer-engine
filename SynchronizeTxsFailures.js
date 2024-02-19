@@ -29,6 +29,7 @@ class TransactionChecker {
     async scanTxsFailures() {
 
         if (this.isRunning) {
+            // console.log('scanTxsFailures() already running. Skipping this round.');
             return; // Skip execution if already running
         }
 
@@ -72,14 +73,16 @@ class TransactionChecker {
     
                     });
                         
-            }  
+            }
+            
+            this.isRunning = false;
             
         }).catch(e => console.log(e));
     
        }).catch(e => console.log(e));
 
-        } finally {
-            this.isRunning = false;
+        } catch (error) {
+            console.error(error);
         }
 
     }
@@ -87,6 +90,8 @@ class TransactionChecker {
 }
 
 let txChecker = new TransactionChecker(1);
+
+console.log('SynchronizeTxsFailures launched with success.');
 
 setInterval(() => {
     txChecker.scanTxsFailures(txChecker.CheckTxsFailureIndex);

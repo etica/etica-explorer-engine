@@ -26,7 +26,7 @@ class TransactionChecker {
 
             // Prevent concurrent synchronization by setting a flag
             if (this.isSyncing) {
-                console.log('Already syncing blocks. Skipping this round.');
+                // console.log('Already syncing blocks. Skipping this round.');
                 return;
             }
             try {
@@ -61,9 +61,6 @@ class TransactionChecker {
             } catch (error) {
                 console.error('Error during synchronization:', error);
             }
-
-
-
 
 
     }

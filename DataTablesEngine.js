@@ -33,11 +33,11 @@ async fill_diseasesnohash(){
   this.DbTransaction.diseasesnohash().then(async (diseases) => {
 
     for (let onedisease of diseases) {
-    console.log('onedisease no hash found is', onedisease);
+    //console.log('onedisease no hash found is', onedisease);
     this.getdisease(onedisease).then((fulldisease) => {
          
         if (fulldisease && fulldisease != null){
-          console.log('full disease no hash is ', fulldisease);
+          //console.log('full disease no hash is ', fulldisease);
           this.DbTransaction.updatedisease(fulldisease, onedisease.diseaseindex);
         }
         else{
@@ -58,17 +58,16 @@ async fill_chunksnohash(){
   this.DbTransaction.chunksnohash().then(async (chunks) => {
 
     for (let onechunk of chunks) {
-    console.log('onechunk no hash found', onechunk);
+    //console.log('onechunk no hash found', onechunk);
     this.getchunk(onechunk).then((fullchunk) => {
   
         if (fullchunk && fullchunk != null){
-          console.log('full chunk no hash is: ', fullchunk);
+          //console.log('full chunk no hash is: ', fullchunk);
           this.DbTransaction.updatechunk(fullchunk, onechunk.chunkid);
         }
         else{
-         console.log('no chunk found');
+         console.log('Did not update chunk, was not found on blockchain: ', onechunk);
         }  
-      
       
       });
     }
@@ -83,21 +82,20 @@ async fill_proposalsnoperiod(){
   this.DbTransaction.proposalsnoperiod().then(async (proposals) => {
 
     for (let oneproposal of proposals) {
-    console.log('oneproposal no period found is', oneproposal);
+    //console.log('oneproposal no period found is', oneproposal);
     this.getproposal(oneproposal).then((resp) => {
         let fullproposal = resp.fullproposal;
         let fullpropsdata = resp.fullpropsdata;
       
         if (fullproposal && fullproposal != null){
-            console.log('full proposal no period is ', fullproposal);
+            //console.log('full proposal no period is ', fullproposal);
             this.DbTransaction.updateproposal(fullproposal, oneproposal.proposed_release_hash).then(async (results) => {
             this.DbTransaction.insertpropsdata(fullpropsdata, oneproposal.proposed_release_hash, oneproposal.id);   
           });
         }
         else{
-         console.log('no proposal found');
+         console.log('Did not update proposal, was not found on blockchain: ', oneproposal);
         }  
-      
       
       });
     }
@@ -118,7 +116,7 @@ async fill_periodsnorewards(){
           this.DbTransaction.updateperiod(fullperiod, oneperiod.periodid);
         }
         else{
-         console.log('no period found');
+         console.log('Did not update period, was not found on blockchain: ', oneperiod);
         }  
       
       

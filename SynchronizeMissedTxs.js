@@ -26,6 +26,7 @@ class TransactionChecker {
     async checkmissingtxs() {
 
         if (this.isRunning) {
+            // console.log('checkmissingtxs() already running. Skipping this round.');
             return; // Skip execution if already running
         }
         this.isRunning = true;
@@ -40,11 +41,11 @@ class TransactionChecker {
                     await this.DbTransaction.deletestaging(etransaction.hash);
                 }
             }
+
+            this.isRunning = false;
+
         } catch (error) {
             console.error(error);
-        } finally {
-            this.isRunning = false;
-            // console.log('this.isRunning is now false, ready for next batch');
         }
 
     }
@@ -57,6 +58,8 @@ class TransactionChecker {
 }
 
 let txChecker = new TransactionChecker();
+
+console.log('SynchronizeMissedTxs launched with success.');
 
 setInterval(() => {
     txChecker.checkmissingtxs();
