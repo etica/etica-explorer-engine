@@ -1004,6 +1004,355 @@ class DbTransactionKnex {
     }
 
 
+    // API
+    async etransactionsPaginated(page = 1, pageSize = 10) {
+        try {
+            const offset = (page - 1) * pageSize;
+            const results = await this.connection('etransactions')
+                .select('*')
+                .limit(pageSize)
+                .offset(offset);
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving etransactions:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+
+    async blocksPaginated(page = 1, pageSize = 10) {
+        try {
+
+            const totalCountQuery = await this.connection('blocks').count();
+            const totalCount = totalCountQuery[0]['count(*)'];
+            
+            const offset = (page - 1) * pageSize;
+            const results = await this.connection('blocks')
+                .select('*')
+                .orderBy('number', 'desc')
+                .limit(pageSize)
+                .offset(offset);
+    
+            return { totalCount, results };
+        } catch (error) {
+            console.error('Error retrieving blocks:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+
+    async diseasesPaginated(page = 1, pageSize = 10) {
+        try {
+            const offset = (page - 1) * pageSize;
+            const results = await this.connection('newdiseases')
+                .select('*')
+                .limit(pageSize)
+                .offset(offset);
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving diseases:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+    async proposalsPaginated(page = 1, pageSize = 10) {
+        try {
+            const offset = (page - 1) * pageSize;
+            const results = await this.connection('newproposals')
+                .select('*')
+                .limit(pageSize)
+                .offset(offset);
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving proposals:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+    async chunksPaginated(page = 1, pageSize = 10) {
+        try {
+            const offset = (page - 1) * pageSize;
+            const results = await this.connection('newchunks')
+                .select('*')
+                .limit(pageSize)
+                .offset(offset);
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving chunks:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+    async rewardclaimsPaginated(page = 1, pageSize = 10) {
+        try {
+            const offset = (page - 1) * pageSize;
+            const results = await this.connection('rewardclaims')
+                .select('*')
+                .limit(pageSize)
+                .offset(offset);
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving rewardclaims:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+    async stakeclaimsPaginated(page = 1, pageSize = 10) {
+        try {
+            const offset = (page - 1) * pageSize;
+            const results = await this.connection('stakeclaims')
+                .select('*')
+                .limit(pageSize)
+                .offset(offset);
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving stakeclaims:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+
+    async newfeesPaginated(page = 1, pageSize = 10) {
+        try {
+            const offset = (page - 1) * pageSize;
+            const results = await this.connection('newfees')
+                .select('*')
+                .limit(pageSize)
+                .offset(offset);
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving newfees:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+
+    async newslashsPaginated(page = 1, pageSize = 10) {
+        try {
+            const offset = (page - 1) * pageSize;
+            const results = await this.connection('newslashs')
+                .select('*')
+                .limit(pageSize)
+                .offset(offset);
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving newslashs:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+
+    async newcommitsPaginated(page = 1, pageSize = 10) {
+        try {
+            const offset = (page - 1) * pageSize;
+            const results = await this.connection('newcommits')
+                .select('*')
+                .limit(pageSize)
+                .offset(offset);
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving newcommits:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+
+    async newrevealsPaginated(page = 1, pageSize = 10) {
+        try {
+            const offset = (page - 1) * pageSize;
+            const results = await this.connection('newreveals')
+                .select('*')
+                .limit(pageSize)
+                .offset(offset);
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving newreveals:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+    async newstakesPaginated(page = 1, pageSize = 10) {
+        try {
+            const offset = (page - 1) * pageSize;
+            const results = await this.connection('newstakes')
+                .select('*')
+                .limit(pageSize)
+                .offset(offset);
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving newstakes:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+    async transfersPaginated(page = 1, pageSize = 10) {
+        try {
+            const offset = (page - 1) * pageSize;
+            const results = await this.connection('transfers')
+                .select('*')
+                .limit(pageSize)
+                .offset(offset);
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving transfers:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+    async mintsPaginated(page = 1, pageSize = 10) {
+        try {
+            const offset = (page - 1) * pageSize;
+            const results = await this.connection('mints')
+                .select('*')
+                .limit(pageSize)
+                .offset(offset);
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving mints:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+    async newstakescsldtsPaginated(page = 1, pageSize = 10) {
+        try {
+            const offset = (page - 1) * pageSize;
+            const results = await this.connection('newstakescsldts')
+                .select('*')
+                .limit(pageSize)
+                .offset(offset);
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving newstakescsldts:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+    async newstakesnapsPaginated(page = 1, pageSize = 10) {
+        try {
+            const offset = (page - 1) * pageSize;
+            const results = await this.connection('newstakesnaps')
+                .select('*')
+                .limit(pageSize)
+                .offset(offset);
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving newstakesnaps:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+    async proposdatasPaginated(page = 1, pageSize = 10) {
+        try {
+            const offset = (page - 1) * pageSize;
+            const results = await this.connection('proposdatas')
+                .select('*')
+                .limit(pageSize)
+                .offset(offset);
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving proposdatas:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+    async newperiodsPaginated(page = 1, pageSize = 10) {
+        try {
+            const offset = (page - 1) * pageSize;
+            const results = await this.connection('newperiods')
+                .select('*')
+                .limit(pageSize)
+                .offset(offset);
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving newperiods:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+    async newrecoversPaginated(page = 1, pageSize = 10) {
+        try {
+            const offset = (page - 1) * pageSize;
+            const results = await this.connection('newrecovers')
+                .select('*')
+                .limit(pageSize)
+                .offset(offset);
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving newrecovers:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+
+    async getPeriodProposals(periodid) {
+        try {
+            
+            const results = await this.connection('proposals')
+                .select('*')
+                .where('periodid', periodid)
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving proposals:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+
+    async getProposalReveals(proposal_hash) {
+        try {
+            
+            const results = await this.connection('reveals')
+                .select('*')
+                .where('proposal', proposal_hash)
+    
+            return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error('Error retrieving reveals of proposal:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+
 
 }
 
