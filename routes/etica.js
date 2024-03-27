@@ -580,7 +580,9 @@ router.get("/periodvotes", [], async (req, res) => {
 
     try {
         // Get the period information
-        const periodId = req.query.periodid;
+        const periodId = parseInt(req.query.periodId) || 1;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 1000; // Adjust the page size as needed
 
         // Get all proposals within the given period
         const proposals = await dbTransaction.getPeriodProposals(periodId);
@@ -591,22 +593,25 @@ router.get("/periodvotes", [], async (req, res) => {
         // Loop through each proposal to retrieve its last votes
         for (const proposal of proposals) {
             // Retrieve the last reveals for the current proposal
-            const proposalReveals = await dbTransaction.getProposalReveals(proposal.proposal_hash);
+            const proposalReveals = await dbTransaction.getProposalReveals(proposal.proposed_release_hash);
 
             for (const proposalReveal of proposalReveals) {
                 if (proposalReveal.amount) {
                     const proposalRevealAmountBN = web3.utils.toBN(proposalReveal.amount);
                     votesAmount = votesAmount.add(proposalRevealAmountBN);
 
-                    nbVotes = nbVotes.add('1');
+                    nbVotes = nbVotes.add(web3.utils.toBN('1'));
                 }
             }
         }
 
         let avgVote = 0;
-        if (nbVotes.lt(web3.utils.toBN('0'))) {
+        if (nbVotes.gt(web3.utils.toBN('0'))) {
             avgVote = votesAmount.div(nbVotes);
         }
+
+        votesAmount = votesAmount.toString();
+        avgVote = avgVote.toString();
 
         // Prepare response data
         const responseData = {

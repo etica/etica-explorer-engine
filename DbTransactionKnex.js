@@ -1301,13 +1301,12 @@ class DbTransactionKnex {
     }
 
 
-    async getPeriodProposals(periodid, page = 1, pageSize = 1000) {
+    async getPeriodProposals(periodid) {
         try {
-            
-            const results = await this.connection('proposals')
+            console.log('periodid: ', periodid);
+            const results = await this.connection('newproposals')
                 .select('*')
-                .where('periodid', periodid)
-                .paginate({ perPage: pageSize, currentPage: page });
+                .where('periodid', periodid);
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1318,13 +1317,12 @@ class DbTransactionKnex {
     }
 
 
-    async getProposalReveals(proposal_hash, page = 1, pageSize = 1000) {
+    async getProposalReveals(proposal_hash) {
         try {
             
-            const results = await this.connection('reveals')
+            const results = await this.connection('newreveals')
                 .select('*')
-                .where('proposal', proposal_hash)
-                .paginate({ perPage: pageSize, currentPage: page });
+                .where('proposal_hash', proposal_hash);
     
             return results.length > 0 ? results : [];
         } catch (error) {
