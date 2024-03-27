@@ -1005,13 +1005,12 @@ class DbTransactionKnex {
 
 
     // API
-    async etransactionsPaginated(page = 1, pageSize = 10) {
+    async etransactionsPaginated(page = 1, pageSize = 1000) {
         try {
-            const offset = (page - 1) * pageSize;
+
             const results = await this.connection('etransactions')
                 .select('*')
-                .limit(pageSize)
-                .offset(offset);
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1042,13 +1041,12 @@ class DbTransactionKnex {
     }
 
 
-    async diseasesPaginated(page = 1, pageSize = 10) {
+    async diseasesPaginated(page = 1, pageSize = 1000) {
         try {
-            const offset = (page - 1) * pageSize;
+
             const results = await this.connection('newdiseases')
                 .select('*')
-                .limit(pageSize)
-                .offset(offset);
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1058,13 +1056,12 @@ class DbTransactionKnex {
         }
     }
 
-    async proposalsPaginated(page = 1, pageSize = 10) {
+    async proposalsPaginated(page = 1, pageSize = 1000) {
         try {
-            const offset = (page - 1) * pageSize;
+
             const results = await this.connection('newproposals')
                 .select('*')
-                .limit(pageSize)
-                .offset(offset);
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1074,13 +1071,12 @@ class DbTransactionKnex {
         }
     }
 
-    async chunksPaginated(page = 1, pageSize = 10) {
+    async chunksPaginated(page = 1, pageSize = 1000) {
         try {
-            const offset = (page - 1) * pageSize;
+
             const results = await this.connection('newchunks')
                 .select('*')
-                .limit(pageSize)
-                .offset(offset);
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1090,13 +1086,12 @@ class DbTransactionKnex {
         }
     }
 
-    async rewardclaimsPaginated(page = 1, pageSize = 10) {
+    async rewardclaimsPaginated(page = 1, pageSize = 1000) {
         try {
-            const offset = (page - 1) * pageSize;
+
             const results = await this.connection('rewardclaims')
                 .select('*')
-                .limit(pageSize)
-                .offset(offset);
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1106,13 +1101,12 @@ class DbTransactionKnex {
         }
     }
 
-    async stakeclaimsPaginated(page = 1, pageSize = 10) {
+    async stakeclaimsPaginated(page = 1, pageSize = 1000) {
         try {
-            const offset = (page - 1) * pageSize;
+
             const results = await this.connection('stakeclaims')
                 .select('*')
-                .limit(pageSize)
-                .offset(offset);
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1123,13 +1117,12 @@ class DbTransactionKnex {
     }
 
 
-    async newfeesPaginated(page = 1, pageSize = 10) {
+    async newfeesPaginated(page = 1, pageSize = 1000) {
         try {
-            const offset = (page - 1) * pageSize;
+
             const results = await this.connection('newfees')
                 .select('*')
-                .limit(pageSize)
-                .offset(offset);
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1140,13 +1133,12 @@ class DbTransactionKnex {
     }
 
 
-    async newslashsPaginated(page = 1, pageSize = 10) {
+    async newslashsPaginated(page = 1, pageSize = 1000) {
         try {
-            const offset = (page - 1) * pageSize;
+            
             const results = await this.connection('newslashs')
                 .select('*')
-                .limit(pageSize)
-                .offset(offset);
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1157,13 +1149,12 @@ class DbTransactionKnex {
     }
 
 
-    async newcommitsPaginated(page = 1, pageSize = 10) {
+    async newcommitsPaginated(page = 1, pageSize = 1000) {
         try {
-            const offset = (page - 1) * pageSize;
+
             const results = await this.connection('newcommits')
                 .select('*')
-                .limit(pageSize)
-                .offset(offset);
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1174,13 +1165,12 @@ class DbTransactionKnex {
     }
 
 
-    async newrevealsPaginated(page = 1, pageSize = 10) {
+    async newrevealsPaginated(page = 1, pageSize = 1000) {
         try {
-            const offset = (page - 1) * pageSize;
+
             const results = await this.connection('newreveals')
                 .select('*')
-                .limit(pageSize)
-                .offset(offset);
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1190,13 +1180,12 @@ class DbTransactionKnex {
         }
     }
 
-    async newstakesPaginated(page = 1, pageSize = 10) {
+    async newstakesPaginated(page = 1, pageSize = 1000) {
         try {
-            const offset = (page - 1) * pageSize;
+
             const results = await this.connection('newstakes')
                 .select('*')
-                .limit(pageSize)
-                .offset(offset);
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1206,13 +1195,12 @@ class DbTransactionKnex {
         }
     }
 
-    async transfersPaginated(page = 1, pageSize = 10) {
+    async transfersPaginated(page = 1, pageSize = 1000) {
         try {
-            const offset = (page - 1) * pageSize;
+
             const results = await this.connection('transfers')
                 .select('*')
-                .limit(pageSize)
-                .offset(offset);
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1222,13 +1210,12 @@ class DbTransactionKnex {
         }
     }
 
-    async mintsPaginated(page = 1, pageSize = 10) {
+    async mintsPaginated(page = 1, pageSize = 1000) {
         try {
-            const offset = (page - 1) * pageSize;
+
             const results = await this.connection('mints')
                 .select('*')
-                .limit(pageSize)
-                .offset(offset);
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1238,13 +1225,12 @@ class DbTransactionKnex {
         }
     }
 
-    async newstakescsldtsPaginated(page = 1, pageSize = 10) {
+    async newstakescsldtsPaginated(page = 1, pageSize = 1000) {
         try {
-            const offset = (page - 1) * pageSize;
+
             const results = await this.connection('newstakescsldts')
                 .select('*')
-                .limit(pageSize)
-                .offset(offset);
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1254,13 +1240,12 @@ class DbTransactionKnex {
         }
     }
 
-    async newstakesnapsPaginated(page = 1, pageSize = 10) {
+    async newstakesnapsPaginated(page = 1, pageSize = 1000) {
         try {
-            const offset = (page - 1) * pageSize;
+
             const results = await this.connection('newstakesnaps')
                 .select('*')
-                .limit(pageSize)
-                .offset(offset);
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1270,13 +1255,12 @@ class DbTransactionKnex {
         }
     }
 
-    async proposdatasPaginated(page = 1, pageSize = 10) {
+    async proposdatasPaginated(page = 1, pageSize = 1000) {
         try {
-            const offset = (page - 1) * pageSize;
+
             const results = await this.connection('proposdatas')
                 .select('*')
-                .limit(pageSize)
-                .offset(offset);
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1286,13 +1270,12 @@ class DbTransactionKnex {
         }
     }
 
-    async newperiodsPaginated(page = 1, pageSize = 10) {
+    async newperiodsPaginated(page = 1, pageSize = 1000) {
         try {
-            const offset = (page - 1) * pageSize;
+
             const results = await this.connection('newperiods')
                 .select('*')
-                .limit(pageSize)
-                .offset(offset);
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1302,13 +1285,12 @@ class DbTransactionKnex {
         }
     }
 
-    async newrecoversPaginated(page = 1, pageSize = 10) {
+    async newrecoversPaginated(page = 1, pageSize = 1000) {
         try {
-            const offset = (page - 1) * pageSize;
+
             const results = await this.connection('newrecovers')
                 .select('*')
-                .limit(pageSize)
-                .offset(offset);
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1319,12 +1301,13 @@ class DbTransactionKnex {
     }
 
 
-    async getPeriodProposals(periodid) {
+    async getPeriodProposals(periodid, page = 1, pageSize = 1000) {
         try {
             
             const results = await this.connection('proposals')
                 .select('*')
                 .where('periodid', periodid)
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
@@ -1335,12 +1318,13 @@ class DbTransactionKnex {
     }
 
 
-    async getProposalReveals(proposal_hash) {
+    async getProposalReveals(proposal_hash, page = 1, pageSize = 1000) {
         try {
             
             const results = await this.connection('reveals')
                 .select('*')
                 .where('proposal', proposal_hash)
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return results.length > 0 ? results : [];
         } catch (error) {
