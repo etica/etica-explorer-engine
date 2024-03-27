@@ -185,7 +185,7 @@ router.get("/transactions", [], async (req, res) => {
 router.get("/blocks", [], async (req, res) => {
 
     const page = parseInt(req.query.page) || 1;
-    const pageSize = 100; // Adjust the page size as needed
+    const pageSize = 1000; // Adjust the page size as needed
     const baseUrl = "/api/etica/blocks"; // Adjust the base URL as needed
 
     // Retrieve data from the database with pagination

@@ -1022,18 +1022,16 @@ class DbTransactionKnex {
     }
 
 
-    async blocksPaginated(page = 1, pageSize = 10) {
+    async blocksPaginated(page = 1, pageSize = 1000) {
         try {
 
             const totalCountQuery = await this.connection('blocks').count();
             const totalCount = totalCountQuery[0]['count(*)'];
             
-            const offset = (page - 1) * pageSize;
             const results = await this.connection('blocks')
                 .select('*')
-                .orderBy('number', 'desc')
-                .limit(pageSize)
-                .offset(offset);
+                .orderBy('id', 'desc')
+                .paginate({ perPage: pageSize, currentPage: page });
     
             return { totalCount, results };
         } catch (error) {
