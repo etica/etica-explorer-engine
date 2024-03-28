@@ -770,6 +770,13 @@ router.get("/periodproposals", [], async (req, res) => {
                 firstProposalProcessed = true;
             }
 
+            if(proposalData.prestatus == '1'){
+                acceptedProposals = acceptedProposals.add(web3.utils.toBN('1'));
+            }
+            else{
+                rejectedProposals = rejectedProposals.add(web3.utils.toBN('1'));
+            }
+
             const proposalSlashingRatioBN = web3.utils.toBN(proposalData.approvalthreshold);
             sumSlashingRatios = sumSlashingRatios.add(proposalSlashingRatioBN);
         
