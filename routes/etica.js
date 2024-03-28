@@ -851,7 +851,7 @@ router.get("/dailyactivity", [], async (req, res) => {
             const emptyData = {
                 querysuccess: false,
                 data: '',
-                'error_message': 'No blocks found on Etica Blockchain for this date. Make sure to enter a valid date. Remember Etica blockchain started on April 17th 2022.'
+                'error_message': 'No blocks found on Etica Blockchain for this date. Make sure to enter a valid date. example: use /dailyactivity?date=05-04-2023 for April 5th 2023. Remember Etica blockchain started on April 17th 2022.'
             };
             res.send({
                 ok: false,
@@ -870,10 +870,42 @@ router.get("/dailyactivity", [], async (req, res) => {
         const stakeclaimsTransactions = await dbTransaction.getTransactionsBetweenBlocks(firstblock.id, lastblock.id, 'stakeclaimed');
         const recoversTransactions = await dbTransaction.getTransactionsBetweenBlocks(firstblock.id, lastblock.id, 'newrecover');
 
+        var minCommit = web3.utils.toBN('0');
+        var maxCommit = web3.utils.toBN('0');
+        var avgCommit = web3.utils.toBN('0');
+        var commitsAmount = web3.utils.toBN('0');
+        var firstCommitProcessed = false;
+
+        for(const commitTransaction of commitsTransactions){
+
+            const commit = await dbTransaction.getCommitFromTx(commitTransaction.hash);
+
+            const commitAmountBN = web3.utils.toBN(commit.amount);
+                  commitsAmount = commitsAmount.add(commitAmountBN);
+            
+            if (!firstCommitProcessed) {
+                maxCommit = commitAmountBN;
+                minCommit = commitAmountBN;
+                firstCommitProcessed = true;
+            } else {
+                if (commitAmountBN.gte(maxCommit)) {
+                    maxCommit = commitAmountBN;
+                }
+                if (commitAmountBN.lte(minCommit)) {
+                    minCommit = commitAmountBN;
+                }
+            }
+
+        }
+
+
         // Prepare response data
         const responseData = {
             querysuccess: true,
             nbCommits: commitsTransactions.length,
+            commitsAmount: commitsAmount.toString(),
+            minCommit: minCommit.toString(),
+            maxCommit: maxCommit.toString(),
             nbProposals: proposalsTransactions.length,
             nbChunks: chunksTransactions.length,
             nbRewardClaims: rewardclaimsTransactions.length,

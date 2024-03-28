@@ -1411,16 +1411,17 @@ class DbTransactionKnex {
     }
     
     // Function to get block by hash
-    async getBlockByHash(blockHash) {
+    async getCommitFromTx(transactionHash) {
+        
         try {
-            const result = await knex('blocks')
+            const result = await knex('newcommits')
                 .select('*')
-                .where('hash', blockHash)
+                .where('transactionhash', transactionHash)
                 .first();
     
             return result || null;
         } catch (error) {
-            console.error('Error retrieving block:', error);
+            console.error('Error retrieving commit from transaction hash:', error);
             throw error;
         }
     }
