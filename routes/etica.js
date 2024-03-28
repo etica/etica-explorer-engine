@@ -7,6 +7,8 @@ const DbTransactionKnex = require("../DbTransactionKnex.js");
 const dotenv = require('dotenv');
 dotenv.config();
 
+const { DateTime } = require('luxon');
+
 
 const MAINRPC = process.env.MAIN_RPC;
 let web3 = new Web3(new Web3.providers.HttpProvider(MAINRPC));
@@ -816,6 +818,84 @@ router.get("/periodproposals", [], async (req, res) => {
     } catch (error) {
         console.error('Error retrieving period votes stats:', error);
         throw error;
+    }
+
+});
+
+
+router.get("/dailyactivity", [], async (req, res) => {
+
+    try {
+
+        const targetDateStr = req.query.date;
+
+        // Parse the targetDate string into a DateTime object
+        const utcDate = DateTime.fromFormat(targetDateStr, 'dd-MM-yyyy', { zone: 'utc' });
+
+        // Check if the date is valid
+        if (!utcDate.isValid) {
+            throw new Error('Invalid date UTC format. Please provide date in dd-MM-yyyy format.');
+        }
+
+        // Start of the day (first second)
+        const startOfDay = Math.floor(utcDate.startOf('day').toSeconds());
+
+        // End of the day (last second)
+        const endOfDay = Math.floor(utcDate.endOf('day').toSeconds());
+
+        const blocks = await dbTransaction.getBlocksOfDate(startOfDay, endOfDay);
+        const firstblock = blocks[0];
+        const lastblock = blocks[blocks.length - 1];
+
+        if(!firstblock || !firstblock.id || !lastblock || !lastblock.id){
+            const emptyData = {
+                querysuccess: false,
+                data: '',
+                'error_message': 'No blocks found on Etica Blockchain for this date. Make sure to enter a valid date. Remember Etica blockchain started on April 17th 2022.'
+            };
+            res.send({
+                ok: false,
+                emptyData
+            }); 
+            return;
+         }
+
+        // Get transactions submitted on the specified date
+        const proposalsTransactions = await dbTransaction.getTransactionsBetweenBlocks(firstblock.id, lastblock.id, 'newproposal');
+        const commitsTransactions = await dbTransaction.getTransactionsBetweenBlocks(firstblock.id, lastblock.id, 'newcommit');
+        const chunksTransactions = await dbTransaction.getTransactionsBetweenBlocks(firstblock.id, lastblock.id, 'newchunk');
+        const rewardclaimsTransactions = await dbTransaction.getTransactionsBetweenBlocks(firstblock.id, lastblock.id, 'rewardclaim');
+        const feesTransactions = await dbTransaction.getTransactionsBetweenBlocks(firstblock.id, lastblock.id, 'newfee');
+        const stakesTransactions = await dbTransaction.getTransactionsBetweenBlocks(firstblock.id, lastblock.id, 'newstake');
+        const stakeclaimsTransactions = await dbTransaction.getTransactionsBetweenBlocks(firstblock.id, lastblock.id, 'stakeclaimed');
+        const recoversTransactions = await dbTransaction.getTransactionsBetweenBlocks(firstblock.id, lastblock.id, 'newrecover');
+
+        // Prepare response data
+        const responseData = {
+            querysuccess: true,
+            nbCommits: commitsTransactions.length,
+            nbProposals: proposalsTransactions.length,
+            nbChunks: chunksTransactions.length,
+            nbRewardClaims: rewardclaimsTransactions.length,
+            nbFees: feesTransactions.length,
+            nbStakes: stakesTransactions.length,
+            nbStakeClaims: stakeclaimsTransactions.length,
+            nbRecovers: recoversTransactions.length
+        };
+
+        res.send({
+            ok: true,
+            responseData,
+        });
+
+
+    } catch (error) {
+        console.error('Error retrieving daily activity:', error);
+        res.send({
+            error_msg: 'Error retrieving daily activity. Please check date format, example: use /dailyactivity?date=05-04-2023 for April 5th 2023.',
+            error: error
+        }); 
+        return;
     }
 
 });

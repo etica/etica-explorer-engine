@@ -1350,6 +1350,81 @@ class DbTransactionKnex {
         }
     }
 
+    
+    async getBlocksOfDate(startOfDay, endOfDay) {
+        try {
+
+                const results = await knex('blocks')
+                    .select('*')
+                    .where('timestamp', '>=', startOfDay)
+                    .where('timestamp', '<=', endOfDay);
+
+                return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error(`Error retrieving blocks between ${startOfDay} and ${endOfDay}:`, error);
+            throw error;
+        }
+    }
+
+
+    async getTransactionsBetweenBlocks(firstBlockId, lastBlockId, eventtype) {
+        try {
+
+            const eventtype_nb = {
+                'transfer': 1,
+                'mint': 2,
+                'newproposal': 3,
+                'newchunk': 4,
+                'rewardclaim': 5,
+                'newfee': 6,
+                'newslash': 7,
+                'newcommit': 8,
+                'newreveal': 9,
+                'newstake': 10,
+                'stakeclaimed': 11,
+                'newdisease': 12,
+                'newstakescsldt': 13,
+                'newstakesnap': 14,
+                'tieclaim': 15,
+                'createdperiod': 16,
+                'newrecover': 17
+            };
+    
+            // Check if the event type exists in the mapping
+            if (!(eventtype in eventtype_nb)) {
+                throw new Error(`Invalid event type: ${eventtype}`);
+            }
+    
+            const eventTypeNumeric = eventtype_nb[eventtype];
+
+            const results = await knex('etransactions')
+                .select('*')
+                .where('block_id', '>=', firstBlockId)
+                .where('block_id', '<=', lastBlockId)
+                .where('eventtype', eventTypeNumeric);
+    
+                return results.length > 0 ? results : [];
+        } catch (error) {
+            console.error(`Error retrieving transactions of blocks_id between ${firstBlockId} and ${lastBlockId}:`, error);
+            throw error;
+        }
+    }
+    
+    // Function to get block by hash
+    async getBlockByHash(blockHash) {
+        try {
+            const result = await knex('blocks')
+                .select('*')
+                .where('hash', blockHash)
+                .first();
+    
+            return result || null;
+        } catch (error) {
+            console.error('Error retrieving block:', error);
+            throw error;
+        }
+    }
+
 
 
 }
