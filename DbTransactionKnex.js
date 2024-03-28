@@ -1303,7 +1303,7 @@ class DbTransactionKnex {
 
     async getPeriodProposals(periodid) {
         try {
-            console.log('periodid: ', periodid);
+            
             const results = await this.connection('newproposals')
                 .select('*')
                 .where('periodid', periodid);
@@ -1327,6 +1327,24 @@ class DbTransactionKnex {
             return results.length > 0 ? results : [];
         } catch (error) {
             console.error('Error retrieving reveals of proposal:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+
+    async getProposalData(proposal_hash) {
+        try {
+            
+            const results = await this.connection('propsdatas')
+                .select('*')
+                .where('proposalhash', proposal_hash)
+                .limit(1)
+                .first();
+    
+            return results ? results : [];
+        } catch (error) {
+            console.error('Error retrieving propsdatas of proposal:', error);
             this.reconnectDatabase();
             throw error;
         }

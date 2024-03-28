@@ -575,6 +575,87 @@ router.get("/newrecovers", [], async (req, res) => {
 });
 
 
+router.get("/periodvotes", [], async (req, res) => {
+
+    try {
+        // Get the period information
+        const periodId = parseInt(req.query.periodId) || 1;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 1000; // Adjust the page size as needed
+
+        // Get all proposals within the given period
+        const proposals = await dbTransaction.getPeriodProposals(periodId);
+
+        let votesAmount = web3.utils.toBN('0');
+        let nbVotes = web3.utils.toBN('0');
+        let maxVote = web3.utils.toBN('0');
+        let minVote = web3.utils.toBN('0');
+        let firstVoteProcessed = false;
+
+        // Loop through each proposal to retrieve its last votes
+        for (const proposal of proposals) {
+            // Retrieve the last reveals for the current proposal
+            const proposalReveals = await dbTransaction.getProposalReveals(proposal.proposed_release_hash);
+
+            for (const proposalReveal of proposalReveals) {
+                if (proposalReveal.amount) {
+                    const proposalRevealAmountBN = web3.utils.toBN(proposalReveal.amount);
+                    votesAmount = votesAmount.add(proposalRevealAmountBN);
+
+                    if (!firstVoteProcessed) {
+                        maxVote = proposalRevealAmountBN;
+                        minVote = proposalRevealAmountBN;
+                        firstVoteProcessed = true;
+                    } else {
+                        if (proposalRevealAmountBN.gte(maxVote)) {
+                            maxVote = proposalRevealAmountBN;
+                        }
+                        if (proposalRevealAmountBN.lte(minVote)) {
+                            minVote = proposalRevealAmountBN;
+                        }
+                    }
+
+
+                    nbVotes = nbVotes.add(web3.utils.toBN('1'));
+                }
+            }
+        }
+
+        let avgVote = 0;
+        if (nbVotes.gt(web3.utils.toBN('0'))) {
+            avgVote = votesAmount.div(nbVotes);
+        }
+
+        votesAmount = votesAmount.toString();
+        avgVote = avgVote.toString();
+        nbVotes = nbVotes.toString();
+
+        minVote = minVote.toString();
+        maxVote = maxVote.toString();
+
+        // Prepare response data
+        const responseData = {
+            querysuccess: true,
+            votesamount: votesAmount,
+            nbvotes: nbVotes,
+            avgvote: avgVote,
+            minvote: minVote,
+            maxvote: maxVote
+        };
+
+        res.send({
+            ok: true,
+            responseData,
+        });
+
+
+    } catch (error) {
+        console.error('Error retrieving period votes stats:', error);
+        throw error;
+    }
+
+});
+
 
 router.get("/periodvotes", [], async (req, res) => {
 
@@ -589,6 +670,9 @@ router.get("/periodvotes", [], async (req, res) => {
 
         let votesAmount = web3.utils.toBN('0');
         let nbVotes = web3.utils.toBN('0');
+        let maxVote = web3.utils.toBN('0');
+        let minVote = web3.utils.toBN('0');
+        let firstVoteProcessed = false;
 
         // Loop through each proposal to retrieve its last votes
         for (const proposal of proposals) {
@@ -599,6 +683,20 @@ router.get("/periodvotes", [], async (req, res) => {
                 if (proposalReveal.amount) {
                     const proposalRevealAmountBN = web3.utils.toBN(proposalReveal.amount);
                     votesAmount = votesAmount.add(proposalRevealAmountBN);
+
+                    if (!firstVoteProcessed) {
+                        maxVote = proposalRevealAmountBN;
+                        minVote = proposalRevealAmountBN;
+                        firstVoteProcessed = true;
+                    } else {
+                        if (proposalRevealAmountBN.gte(maxVote)) {
+                            maxVote = proposalRevealAmountBN;
+                        }
+                        if (proposalRevealAmountBN.lte(minVote)) {
+                            minVote = proposalRevealAmountBN;
+                        }
+                    }
+
 
                     nbVotes = nbVotes.add(web3.utils.toBN('1'));
                 }
@@ -612,13 +710,94 @@ router.get("/periodvotes", [], async (req, res) => {
 
         votesAmount = votesAmount.toString();
         avgVote = avgVote.toString();
+        nbVotes = nbVotes.toString();
+
+        minVote = minVote.toString();
+        maxVote = maxVote.toString();
 
         // Prepare response data
         const responseData = {
             querysuccess: true,
             votesamount: votesAmount,
             nbvotes: nbVotes,
-            avgvote: avgVote
+            avgvote: avgVote,
+            minvote: minVote,
+            maxvote: maxVote
+        };
+
+        res.send({
+            ok: true,
+            responseData,
+        });
+
+
+    } catch (error) {
+        console.error('Error retrieving period votes stats:', error);
+        throw error;
+    }
+
+});
+
+router.get("/periodproposals", [], async (req, res) => {
+
+    try {
+        // Get the period information
+        const periodId = parseInt(req.query.periodId) || 1;
+
+        // Get all proposals within the given period
+        const proposals = await dbTransaction.getPeriodProposals(periodId);
+
+        let nbProposals = web3.utils.toBN(proposals.length);
+        let acceptedProposals  = web3.utils.toBN('0');
+        let rejectedProposals  = web3.utils.toBN('0');
+        let protocolThreshold;
+        let firstProposalProcessed = false;
+
+        let totalNbVotes = web3.utils.toBN('0');
+        let sumSlashingRatios = web3.utils.toBN('0');
+
+        // Loop through each proposal to retrieve its last votes
+        for (const proposal of proposals) {
+            // Retrieve the last reveals for the current proposal
+            const proposalReveals = await dbTransaction.getProposalReveals(proposal.proposed_release_hash);
+            const proposalData = await dbTransaction.getProposalData(proposal.proposed_release_hash);
+            
+            const proposalNbVotesBN = web3.utils.toBN(proposalReveals.length);
+            totalNbVotes = totalNbVotes.add(proposalNbVotesBN);
+
+            if(!firstProposalProcessed){
+                protocolThreshold = proposalData.approvalthreshold;
+                firstProposalProcessed = true;
+            }
+
+            const proposalSlashingRatioBN = web3.utils.toBN(proposalData.approvalthreshold);
+            sumSlashingRatios = sumSlashingRatios.add(proposalSlashingRatioBN);
+        
+        }
+
+        let avgSlashingRatio = 0;
+        if (nbProposals.gt(web3.utils.toBN('0'))) {
+            avgSlashingRatio = sumSlashingRatios.div(nbProposals);
+        }
+
+        let avgProposalNbVotes = 0;
+        if (nbProposals.gt(web3.utils.toBN('0'))) {
+            avgProposalNbVotes = totalNbVotes.div(nbProposals);
+        }
+
+        acceptedProposals = acceptedProposals.toString();
+        rejectedProposals = rejectedProposals.toString();
+        avgSlashingRatio = avgSlashingRatio.toString();
+        nbProposals = nbProposals.toString();
+
+        // Prepare response data
+        const responseData = {
+            querysuccess: true,
+            nbProposals: nbProposals,
+            protocolThreshold: protocolThreshold,
+            acceptedProposals: acceptedProposals,
+            rejectedProposals: rejectedProposals,
+            avgSlashingRatio: avgSlashingRatio
         };
 
         res.send({
