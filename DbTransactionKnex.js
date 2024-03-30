@@ -1528,6 +1528,23 @@ class DbTransactionKnex {
     }
 
 
+    // Function to get recover from txhash
+    async getRecoverFromTx(transactionHash) {
+        
+        try {
+            const result = await knex('newrecovers')
+                .select('*')
+                .where('transactionhash', transactionHash)
+                .first();
+    
+            return result || null;
+        } catch (error) {
+            console.error('Error retrieving slash from transaction hash:', error);
+            throw error;
+        }
+    }
+
+
 
 }
 

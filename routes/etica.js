@@ -967,7 +967,7 @@ router.get("/dailyactivity", [], async (req, res) => {
 
             if(fee){
 
-                const feeAmountBN = web3.utils.toBN(fee.amount);
+                const feeAmountBN = web3.utils.toBN(fee.fee);
                     feesAmount = feesAmount.add(feeAmountBN);
                 
                 if (!firstFeeProcessed) {
