@@ -1410,9 +1410,9 @@ class DbTransactionKnex {
         }
     }
     
-    // Function to get block by hash
+    // Function to get commit from txhash
     async getCommitFromTx(transactionHash) {
-        
+
         try {
             const result = await knex('newcommits')
                 .select('*')
@@ -1422,6 +1422,107 @@ class DbTransactionKnex {
             return result || null;
         } catch (error) {
             console.error('Error retrieving commit from transaction hash:', error);
+            throw error;
+        }
+    }
+
+
+    // Function to get stake from txhash
+    async getStakeFromTx(transactionHash) {
+        
+        try {
+            const result = await knex('newstakes')
+                .select('*')
+                .where('transactionhash', transactionHash)
+                .first();
+    
+            return result || null;
+        } catch (error) {
+            console.error('Error retrieving stake from transaction hash:', error);
+            throw error;
+        }
+    }
+
+    // Function to get stakeclaim from txhash
+    async getStakeclaimFromTx(transactionHash) {
+        
+        try {
+            const result = await knex('stakeclaims')
+                .select('*')
+                .where('transactionhash', transactionHash)
+                .first();
+    
+            return result || null;
+        } catch (error) {
+            console.error('Error retrieving stakeclaim from transaction hash:', error);
+            throw error;
+        }
+    }
+
+
+    // Function to get reveal from txhash
+    async getRevealFromTx(transactionHash) {
+        
+        try {
+            const result = await knex('newreveals')
+                .select('*')
+                .where('transactionhash', transactionHash)
+                .first();
+    
+            return result || null;
+        } catch (error) {
+            console.error('Error retrieving reveal from transaction hash:', error);
+            throw error;
+        }
+    }
+
+
+    // Function to get claim from txhash
+    async getRewardclaimFromTx(transactionHash) {
+        
+        try {
+            const result = await knex('rewardclaims')
+                .select('*')
+                .where('transactionhash', transactionHash)
+                .first();
+    
+            return result || null;
+        } catch (error) {
+            console.error('Error retrieving claim from transaction hash:', error);
+            throw error;
+        }
+    }
+
+
+    // Function to get fee from txhash
+    async getFeeFromTx(transactionHash) {
+        
+        try {
+            const result = await knex('newfees')
+                .select('*')
+                .where('transactionhash', transactionHash)
+                .first();
+    
+            return result || null;
+        } catch (error) {
+            console.error('Error retrieving fee from transaction hash:', error);
+            throw error;
+        }
+    }
+
+
+    // Function to get slash from txhash
+    async getSlashFromTx(transactionHash) {
+        
+        try {
+            const result = await knex('newslashs')
+                .select('*')
+                .where('transactionhash', transactionHash)
+                .first();
+    
+            return result || null;
+        } catch (error) {
+            console.error('Error retrieving slash from transaction hash:', error);
             throw error;
         }
     }
