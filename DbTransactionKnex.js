@@ -799,6 +799,41 @@ class DbTransactionKnex {
     }
 
 
+    async periodsnofinalresults() {
+        try {
+            const results = await this.connection('newperiods')
+                .where(function () {
+
+                    this.where(function () {
+                        this.where('reward_for_editor', '!=', '')
+                            .andWhere('reward_for_curation', '!=', '');
+                    });
+
+                })
+                .andWhere(function () {
+                    this.whereNull('forprops')
+                        .orWhere('forprops', '')
+                        .orWhereNull('againstprops')
+                        .orWhere('againstprops', '')
+                        .orWhereNull('curation_sum')
+                        .orWhere('curation_sum', '')
+                        .orWhereNull('editor_sum')
+                        .orWhere('editor_sum', '');
+                });
+    
+            if (results.length > 0) {
+                return results;
+            } else {
+                return [];
+            }
+        } catch (error) {
+            console.error('Error querying periods without rewards:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+
     async updateperiod(_fullPeriod, _periodId) {
         try {
             const { reward_for_curation, reward_for_editor } = _fullPeriod;
@@ -815,6 +850,60 @@ class DbTransactionKnex {
             return results;
         } catch (error) {
             console.error('Error updating period:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+
+    async updateperiodresults(_fullperiod, _periodid) {
+        try {
+            const { curation_sum, editor_sum, forprops, againstprops } = _fullperiod;
+    
+            const periodSql = {
+                curation_sum,
+                editor_sum,
+                forprops,
+                againstprops
+            };
+    
+            const results = await this.connection('newperiods')
+                .where('periodid', _periodid)
+                .update(periodSql);
+    
+            return results;
+        } catch (error) {
+            console.error('Error updating period:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+    async updatepropsdata(_fullpropsdata, _proposalhash) {
+        try {
+
+            const { finalized_time, status, prestatus, istie, nbvoters, slashingratio, forvotes, againstvotes, lastcuration_weight, lasteditor_weight } = _fullpropsdata;
+    
+            const periodSql = {
+                finalized_time,
+                status,
+                prestatus,
+                istie,
+                nbvoters,
+                slashingratio,
+                forvotes,
+                againstvotes,
+                lastcuration_weight,
+                lasteditor_weight
+            };
+    
+            const results = await this.connection('propsdatas')
+                .where('proposalhash', _proposalhash)
+                .update(periodSql);
+    
+            return results;
+        } catch (error) {
+            console.error('Error updating propsdata:', error);
             this.reconnectDatabase();
             throw error;
         }

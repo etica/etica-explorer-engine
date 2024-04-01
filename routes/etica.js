@@ -990,8 +990,11 @@ router.get("/dailyactivity", [], async (req, res) => {
 
         var minSlash = web3.utils.toBN('0');
         var maxSlash = web3.utils.toBN('0');
+        var minSlashDuration = web3.utils.toBN('0');
+        var maxSlashDuration = web3.utils.toBN('0');
         var nbSlashs = web3.utils.toBN(slashsTransactions.length);
         var slashsAmount = web3.utils.toBN('0');
+        var slashsDuration = web3.utils.toBN('0');
         var firstSlashProcessed = false;
 
         for(const slashTransaction of slashsTransactions){
@@ -1002,10 +1005,15 @@ router.get("/dailyactivity", [], async (req, res) => {
 
                 const slashAmountBN = web3.utils.toBN(slash.amount);
                     slashsAmount = slashsAmount.add(slashAmountBN);
+
+                const slashDurationBN = web3.utils.toBN(slash.duration);
+                    slashsDuration = slashsDuration.add(slashDurationBN);
                 
                 if (!firstSlashProcessed) {
                     maxSlash = slashAmountBN;
                     minSlash = slashAmountBN;
+                    maxSlashDuration = slashDurationBN;
+                    minSlashDuration = slashDurationBN;
                     firstSlashProcessed = true;
                 } else {
                     if (slashAmountBN.gte(maxSlash)) {
@@ -1014,7 +1022,16 @@ router.get("/dailyactivity", [], async (req, res) => {
                     if (slashAmountBN.lte(minSlash)) {
                         minSlash = slashAmountBN;
                     }
+                
+                    if (slashDurationBN.gte(maxSlashDuration)) {
+                        maxSlashDuration = slashDurationBN;
+                    }
+                    if (slashDurationBN.lte(minSlashDuration)) {
+                        minSlashDuration = slashDurationBN;
+                    }
+                
                 }
+                
 
             }
 
@@ -1088,6 +1105,11 @@ router.get("/dailyactivity", [], async (req, res) => {
             avgSlash = slashsAmount.div(nbSlashs);
         }
 
+        let avgSlashDuration = 0;
+        if (nbSlashs.gt(web3.utils.toBN('0'))) {
+            avgSlashDuration = slashsDuration.div(nbSlashs);
+        }
+
         let avgRecover = 0;
         if (nbRecovers.gt(web3.utils.toBN('0'))) {
             avgRecover = recoversAmount.div(nbRecovers);
@@ -1134,6 +1156,10 @@ router.get("/dailyactivity", [], async (req, res) => {
             minSlash: minSlash.toString(),
             maxSlash: maxSlash.toString(),
             avgSlash: avgSlash.toString(),
+            slashsDuration: slashsDuration.toString(),
+            minSlashDuration: minSlashDuration.toString(),
+            maxSlashDuration: maxSlashDuration.toString(),
+            avgSlashDuration: avgSlashDuration.toString(),
             nbRecovers: nbRecovers.toString(),
             recoversAmount: recoversAmount.toString(),
             minRecover: minRecover.toString(),

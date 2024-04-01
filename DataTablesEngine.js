@@ -1,5 +1,7 @@
 const Web3 = require('web3');
 let mysql = require('mysql');
+const moment = require('moment');
+const cron = require('node-cron');
 
 const DbTransactionKnex = require("./DbTransactionKnex.js");
 
@@ -126,6 +128,54 @@ async fill_periodsnorewards(){
 
 }
 
+
+// Main function, fill periods and propsdatas of period proposals if period's reward_for_curation field in db still null:
+async fill_periodsnofinalresults(){
+
+  this.DbTransaction.periodsnofinalresults().then(async (periods) => {
+
+    // calculate current interval:
+    const seconds_per_day = 86400;
+    const seconds_per_period = seconds_per_day * 7;
+    const now = moment().unix();
+    const current_interval = Math.floor(now / seconds_per_period);
+
+    for (let oneperiod of periods) {
+    
+      if(current_interval >= oneperiod.interval + 5){
+
+        await this.getperiod(oneperiod).then(async (fullperiod) => {
+
+          // update propsdata as proposals have reached end of votes:
+          const proposals = await this.DbTransaction.getPeriodProposals(oneperiod.periodid);
+
+          for (const proposal of proposals) {
+            // Retrieve the last reveals for the current proposal
+            const fullpropsdata = await this.getpropsdata(proposal);
+
+            if (fullpropsdata && fullpropsdata != null && fullpropsdata.approvalthreshold != 0){
+              await this.DbTransaction.updatepropsdata(fullpropsdata, proposal.proposed_release_hash);
+            }
+          }
+
+          if (fullperiod && fullperiod != null && fullperiod.curation_sum != 0){
+               this.DbTransaction.updateperiodresults(fullperiod, oneperiod.periodid);
+          }
+          else{
+          console.log('period ', oneperiod.periodid,' not found on blockchain');
+          }  
+      
+        });
+
+    }
+
+    }
+  });
+
+}
+
+
+
 // --------- MAIN FUNCTIONS ---------- //
 
 // DISEASES  
@@ -152,6 +202,15 @@ resp.fullproposal = await this.contract.methods.proposals(_proposed_release_hash
 resp.fullpropsdata = await this.contract.methods.propsdatas(_proposed_release_hash).call({from: RANDOM_ADDRESS});
 return resp;
 }
+
+// get propsdata only:
+async getpropsdata(proposal){
+  let _proposed_release_hash= proposal.proposed_release_hash;
+  let resp = {};
+  resp = await this.contract.methods.propsdatas(_proposed_release_hash).call({from: RANDOM_ADDRESS});
+  return resp;
+  }
+
 // PROPOSALS
 
 
@@ -184,3 +243,10 @@ setInterval(() => {
 setInterval(() => {
   newHanlder.fill_periodsnorewards();
 }, 60 * 1000); // every 60 seconds
+
+// (every Thursday at 4 am)
+cron.schedule('0 4 * * 4', () => {
+  newHanlder.fill_periodsnofinalresults();
+}, {
+  timezone: 'UTC'
+});
