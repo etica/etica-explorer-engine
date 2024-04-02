@@ -517,7 +517,7 @@ class DbTransactionKnex {
 
     async insertStakeClaim(stakeclaim) {
         try {
-            if (stakeclaim.event === 'StakeClaim') {
+            if (stakeclaim.event === 'StakeClaimed') {
                 const sqlstakeclaim = {
                     transactionhash: stakeclaim.transactionHash,
                     staker: stakeclaim.returnValues.staker,
@@ -1097,11 +1097,37 @@ class DbTransactionKnex {
     async etransactionsPaginated(page = 1, pageSize = 1000) {
         try {
 
+            const totalCountQuery = await this.connection('etransactions').count();
+            const totalCount = totalCountQuery[0]['count(*)'];
+            
             const results = await this.connection('etransactions')
                 .select('*')
+                .orderBy('id', 'desc')
                 .paginate({ perPage: pageSize, currentPage: page });
     
-            return results.length > 0 ? results : [];
+            return { totalCount, results };
+
+        } catch (error) {
+            console.error('Error retrieving etransactions:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+    async etransactionsByEventPaginated(page = 1, pageSize = 1000, eventtype) {
+        try {
+
+            const totalCountQuery = await this.connection('etransactions').count();
+            const totalCount = totalCountQuery[0]['count(*)'];
+            
+            const results = await this.connection('etransactions')
+                .select('*')
+                .where('eventtype', eventtype)
+                .orderBy('id', 'desc')
+                .paginate({ perPage: pageSize, currentPage: page });
+    
+            return { totalCount, results };
+
         } catch (error) {
             console.error('Error retrieving etransactions:', error);
             this.reconnectDatabase();

@@ -160,14 +160,22 @@ router.get("/chunks", [], async (req, res) => {
 router.get("/transactions", [], async (req, res) => {
 
     const page = parseInt(req.query.page) || 1;
+    const eventtype = parseInt(req.query.eventtype);
     const pageSize = 10; // Adjust the page size as needed
     const baseUrl = "/api/etica/transactions"; // Adjust the base URL as needed
 
     // Retrieve data from the database with pagination
+    var transactions;
+
+    if(eventtype){
+        transactions = await dbTransaction.etransactionsByEventPaginated(page, pageSize, eventtype);
+    }
+    else {
+        transactions = await dbTransaction.etransactionsPaginated(page, pageSize);
+    }
+
     const totalItems = transactions.length > 0 ? transactions.length : 0;
     const totalPages = Math.ceil(totalItems / pageSize);
-    const transactions = await dbTransaction.etransactionsPaginated(page, pageSize);
-
     // Generate pagination links
     const paginationLinks = generatePaginationLinks(page, totalPages, baseUrl);
 
