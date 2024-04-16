@@ -589,12 +589,67 @@ router.get("/periodvotes", [], async (req, res) => {
 
     try {
         // Get the period information
-        const periodId = parseInt(req.query.periodId) || 1;
+        const periodDate = req.query.periodDate;
         const page = parseInt(req.query.page) || 1;
         const pageSize = 1000; // Adjust the page size as needed
 
         // Get all proposals within the given period
-        const proposals = await dbTransaction.getPeriodProposals(periodId);
+
+        if(!periodDate){
+         
+            const emptyData = {
+                querysuccess: false,
+                data: '',
+                'error_message': 'periodDate is missing in request parameters. Please enter a valid Period date. For example: use /periodvotes?date=25-04-2024 for April 25h 2024. Remember Etica blockchain periods start every Thursday.'
+            };
+            res.send({
+                ok: false,
+                emptyData
+            }); 
+            return;
+
+        }
+
+        // calculate date interval:
+        const seconds_per_day = 86400;
+        const seconds_per_period = seconds_per_day * 7;
+        const utcDate = DateTime.fromFormat(periodDate, 'dd-MM-yyyy', { zone: 'utc' });
+        const periodUnix = utcDate.startOf('day').toSeconds();
+        const periodInterval = Math.floor(periodUnix / seconds_per_period);
+
+        const period = await dbTransaction.getPeriodByInterval(periodInterval);
+
+        if(!period){
+         
+            const emptyData = {
+                querysuccess: false,
+                data: '',
+                'error_message': 'No Period found for this date.'
+            };
+            res.send({
+                ok: false,
+                emptyData
+            }); 
+            return;
+
+        }
+
+        if(!period || !period.periodid){
+         
+                const emptyData = {
+                    querysuccess: false,
+                    data: '',
+                    'error_message': 'No Period found for this date.'
+                };
+                res.send({
+                    ok: false,
+                    emptyData
+                }); 
+                return;
+    
+        }
+
+        const proposals = await dbTransaction.getPeriodProposals(period.periodid);
 
         let votesAmount = web3.utils.toBN('0');
         let nbVotes = web3.utils.toBN('0');
@@ -646,6 +701,7 @@ router.get("/periodvotes", [], async (req, res) => {
         // Prepare response data
         const responseData = {
             querysuccess: true,
+            periodid: period.periodid,
             votesamount: votesAmount,
             nbvotes: nbVotes,
             avgvote: avgVote,
@@ -671,11 +727,59 @@ router.get("/periodproposals", [], async (req, res) => {
 
     try {
         // Get the period information
-        const periodId = parseInt(req.query.periodId) || 1;
+        const periodDate = req.query.periodDate;
 
-        // Get all proposals within the given period
-        const proposals = await dbTransaction.getPeriodProposals(periodId);
+        if(!periodDate){
+         
+            const emptyData = {
+                querysuccess: false,
+                data: '',
+                'error_message': 'periodDate is missing in request parameters. Please enter a valid Period date. For example: use /periodvotes?date=25-04-2024 for April 25h 2024. Remember Etica blockchain periods start every Thursday.'
+            };
+            res.send({
+                ok: false,
+                emptyData
+            }); 
+            return;
 
+        }
+
+        
+        // calculate date interval:
+        const seconds_per_day = 86400;
+        const seconds_per_period = seconds_per_day * 7;
+        const utcDate = DateTime.fromFormat(periodDate, 'dd-MM-yyyy', { zone: 'utc' });
+        const periodUnix = utcDate.startOf('day').toSeconds();
+        const periodInterval = Math.floor(periodUnix / seconds_per_period);
+
+        // calculate period startDare and endDate:
+        const startUnix = periodInterval * seconds_per_period
+        const startDateObj = DateTime.fromSeconds(startUnix)
+        const endDateObj = startDateObj.plus({ days: 7 })
+        const startDate = startDateObj.toFormat('yyyy-MM-dd')
+        const endDate = endDateObj.toFormat('yyyy-MM-dd')
+
+        const period = await dbTransaction.getPeriodByInterval(periodInterval);
+
+        if(!period || !period.periodid){
+         
+            const emptyData = {
+                querysuccess: false,
+                data: '',
+                'error_message': 'No Period found for this date.'
+            };
+            res.send({
+                ok: false,
+                emptyData
+            }); 
+            return;
+
+        }
+
+
+        const proposals = await dbTransaction.getPeriodProposals(period.periodid);
+
+    
         let nbProposals = web3.utils.toBN(proposals.length);
         let acceptedProposals  = web3.utils.toBN('0');
         let rejectedProposals  = web3.utils.toBN('0');
@@ -684,6 +788,7 @@ router.get("/periodproposals", [], async (req, res) => {
 
         let totalNbVotes = web3.utils.toBN('0');
         let sumSlashingRatios = web3.utils.toBN('0');
+        let nbSlashingRatios = web3.utils.toBN('0');
 
         // Loop through each proposal to retrieve its last votes
         for (const proposal of proposals) {
@@ -706,20 +811,41 @@ router.get("/periodproposals", [], async (req, res) => {
                 rejectedProposals = rejectedProposals.add(web3.utils.toBN('1'));
             }
 
-            const proposalSlashingRatioBN = web3.utils.toBN(proposalData.approvalthreshold);
-            sumSlashingRatios = sumSlashingRatios.add(proposalSlashingRatioBN);
+            if(proposalData.slashingratio){
+                const proposalSlashingRatioBN = web3.utils.toBN(proposalData.slashingratio);
+                sumSlashingRatios = sumSlashingRatios.add(proposalSlashingRatioBN);
+                nbSlashingRatios = nbSlashingRatios.add(web3.utils.toBN('1'));
+            }
+            
         
         }
 
         let avgSlashingRatio = 0;
-        if (nbProposals.gt(web3.utils.toBN('0'))) {
-            avgSlashingRatio = sumSlashingRatios.div(nbProposals);
+        if (nbSlashingRatios.gt(web3.utils.toBN('0'))) {
+            avgSlashingRatio = sumSlashingRatios.div(nbSlashingRatios);
         }
 
         let avgProposalNbVotes = 0;
         if (nbProposals.gt(web3.utils.toBN('0'))) {
             avgProposalNbVotes = totalNbVotes.div(nbProposals);
         }
+
+        let editorRewards;
+        if(acceptedProposals.gt(web3.utils.toBN('0'))){
+            editorRewards = period.reward_for_editor;
+          }
+          else {
+            editorRewards = '0';
+          }
+
+        let curationRewards;
+        // if at least one voter vote weight in period.curation_sum, insert period.reward_for_curation in curationRewards:
+        if(period.curation_sum && web3.utils.toBN(period.curation_sum).gt(web3.utils.toBN('0'))){
+            curationRewards = period.reward_for_curation;
+          }
+          else {
+            curationRewards = '0';
+          }
 
         acceptedProposals = acceptedProposals.toString();
         rejectedProposals = rejectedProposals.toString();
@@ -729,11 +855,17 @@ router.get("/periodproposals", [], async (req, res) => {
         // Prepare response data
         const responseData = {
             querysuccess: true,
+            periodid: period.periodid,
+            periodInterval: periodInterval,
+            startDate: startDate,
+            endDate: endDate,
             nbProposals: nbProposals,
             protocolThreshold: protocolThreshold,
             acceptedProposals: acceptedProposals,
             rejectedProposals: rejectedProposals,
-            avgSlashingRatio: avgSlashingRatio
+            avgSlashingRatio: avgSlashingRatio,
+            editorRewards: editorRewards,
+            curationRewards: curationRewards
         };
 
         res.send({

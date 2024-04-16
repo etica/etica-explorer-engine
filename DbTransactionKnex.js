@@ -1432,6 +1432,23 @@ class DbTransactionKnex {
     }
 
 
+    async getPeriodByInterval(period_inteval) {
+        try {
+            
+            const results = await this.connection('newperiods')
+                .select('*')
+                .where('interval', period_inteval)
+                .first();
+    
+                return results ? results : [];
+        } catch (error) {
+            console.error('Error retrieving period by date:', error);
+            this.reconnectDatabase();
+            throw error;
+        }
+    }
+
+
     async getProposalReveals(proposal_hash) {
         try {
             
