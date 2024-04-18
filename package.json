@@ -1,6 +1,6 @@
 {
   "name": "etica-explorer-engine",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "etica-explorer-engine package is a comprehensive Node.js toolset designed for Etica blockchain data extraction. This powerful engine efficiently extracts blockchain data and state, enabling the creation of insightful analytical scripts. Harnessing its capabilities, developers can effortlessly access, parse, and organize Etica blockchain data to build informative visualizations tools, in-depth analyses, and various websites facilitating a deeper understanding of the blockchain's dynamics.",
   "main": "index.js",
   "scripts": {
