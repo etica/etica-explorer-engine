@@ -4,6 +4,7 @@ const moment = require('moment');
 const cron = require('node-cron');
 
 const DbTransactionKnex = require("./DbTransactionKnex.js");
+const Webhooks = require('./Webhooks');
 
 var Contract = require('web3-eth-contract');
 const { abi } = require('./EticaRelease.json');
@@ -92,7 +93,25 @@ async fill_proposalsnoperiod(){
         if (fullproposal && fullproposal != null){
             //console.log('full proposal no period is ', fullproposal);
             this.DbTransaction.updateproposal(fullproposal, oneproposal.proposed_release_hash).then(async (results) => {
-            this.DbTransaction.insertpropsdata(fullpropsdata, oneproposal.proposed_release_hash, oneproposal.id);   
+            this.DbTransaction.insertpropsdata(fullpropsdata, oneproposal.proposed_release_hash, oneproposal.id);  
+
+            console.log('process.env.DISCORD_WEBHOOKS_ACTIVATED', process.env.DISCORD_WEBHOOKS_ACTIVATED);
+            if(process.env.DISCORD_WEBHOOKS_ACTIVATED){
+              console.log('process.env.DISCORD_WEBHOOKS_ACTIVATED PASSED');
+            }
+
+            console.log('process.env.DISCORD_WEBHOOK_NEW_PROPOSAL:', process.env.DISCORD_WEBHOOK_NEW_PROPOSAL);
+            if(process.env.DISCORD_WEBHOOKS_ACTIVATED && process.env.DISCORD_WEBHOOK_NEW_PROPOSAL){
+              console.log('process.env.DISCORD_WEBHOOKS_ACTIVATED && process.env.DISCORD_WEBHOOK_NEW_PROPOSAL PASSED');
+            }
+            
+            if(process.env.DISCORD_WEBHOOKS_ACTIVATED && process.env.DISCORD_WEBHOOK_NEW_PROPOSAL){
+              cconsole.log('--------- in process.env.DISCORD_WEBHOOKS_ACTIVATED && process.env.DISCORD_WEBHOOK_NEW_PROPOSAL condition loop ----------');
+              fullproposal.proposed_release_hash = oneproposal.proposed_release_hash;
+              fullproposal.data = fullpropsdata;
+              this.Webhooks.discord_new_proposal(fullproposal, process.env.DISCORD_WEBHOOK_NEW_PROPOSAL)
+            }
+
           });
         }
         else{
